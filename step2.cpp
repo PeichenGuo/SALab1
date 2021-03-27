@@ -1,6 +1,10 @@
 #define _GNU_SOURCE
-#define TESTBATCH 100000
-#define MAXLENGTH 4096
+#define L1CACHESIZE 64
+#define TESTBATCH 10000
+// #define ARRAYSIZE 5 * L1CACHESIZE * 1024 + 13
+#define ARRAYSIZE 5 * 4096 * 1024 + 13
+#define KB 0x400
+#define BYTE 0x8
 
 #include <iostream>
 #include <sched.h>
@@ -24,26 +28,23 @@ void threadBund(){
 
 int main(){
     threadBund();
-    char* a = new char[MAXLENGTH * 1024];//byte per elements
+    
+    char* a = new char[256 * TESTBATCH];//byte per elements
     int test = 1;//in kb
-    while(test < MAXLENGTH){
-        int size = test * 1024; 
-        register int step = size / TESTBATCH;
-        register int k = 0;
+    int tmp;
+    while(test <= 256){
         clock_t start = clock();
-        for(int i = 0; i < TESTBATCH; i ++){
-            int tmp;
+        for(int i = 0; i < TESTBATCH*test; i += test){
             asm volatile(
                 "movl %1, %%edx\n\t"
                 "movl %%edx, %0"
                 :"=r"(tmp)
-                :"m"(a[k])
+                :"m"(a[i])
                 :"%edx"
             );
-            k += step;
         }
         clock_t end = clock();
-        printf("test %dkb: %lfms\n", test, (double)(end - start)/(double)(TESTBATCH));
+        printf("test %db: %lfms\n", test, (double)(end - start)/(double)(TESTBATCH));
         test *= 2;
     }
     delete[] a;

@@ -1,30 +1,20 @@
 CC = gcc
 CXX = g++ -std=c++11
-# AR ?= ar
-# ARFLAGS = -scurv
-# RANLIB ?= ranlib
- 
-# CFLAGS ?=
-# CXXFLAGS ?=
-# INCLUDE ?=
-# LDFLAGS ?=
- 
-# CFLAGS   += -Wall -g -fPIC -pipe -Wl,-z -Wl,defs -DDEBUG
-# CXXFLAGS += -Wall -g -fPIC -pipe -Wl,-z -Wl,defs -DDEBUG
- 
-# %.o: %.cpp 
-# 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
- 
-# %.o: %.c
-# 	$(CC) $(CFLAGS) $(INCLUDE) -c $<
+(STEP) ?=
+STEPFLAG = -D_GNU_SOURCE
 
-STEP1FLAG = -D _GNU_SOURCE
-
-step1: step1.o
-	$(CXX) -o step1 step1.o
-step1.o: step1.cpp	
-	$(CXX) $(STEP1FLAG) -c step1.cpp
+step$(STEP).exe: step$(STEP).o
+	$(CXX) -o step$(STEP).exe step$(STEP).o
+step$(STEP).o: step$(STEP).cpp	
+	$(CXX) $(STEPFLAG) -c step$(STEP).cpp
+matrix_mul.o: matrix_mul.cpp
+	$(CXX) $(STEPFLAG) -c matrix_mul.cpp
+matrix_mul.exe: matrix_mul.o
+	$(CXX) -o matrix_mul.exe matrix_mul.o
 clean:
-	rm *.o; rm step1
+	rm -rf *.o; rm -rf *.exe
 run:
-	make;./step1
+	make STEP=$(STEP);./step$(STEP).exe
+
+matrix:
+	make matrix_mul.exe;./matrix_mul.exe
