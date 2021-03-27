@@ -10,7 +10,7 @@ step$(STEP).o: step$(STEP).cpp
 matrix_mul.o: matrix_mul.cpp
 	$(CXX) $(STEPFLAG) -c matrix_mul.cpp
 matrix_mul.exe: matrix_mul.o
-	$(CXX) -o matrix_mul.exe matrix_mul.o
+	$(CXX) -g -O0 -o matrix_mul.exe matrix_mul.o 
 clean:
 	rm -rf *.o; rm -rf *.exe
 run:

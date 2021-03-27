@@ -35,11 +35,44 @@ int main() {
 	start_new = clock();
 	//可以修改的部分  开始
 	//======================================================
-	start = clock();
-	for (i = 0; i < 1000; i ++)
-		for (j = 0; j < 1000; j ++)
-			for (k = 0; k < 1000; k ++)
-				d[i][j] += a[i][k] * b[k][j];
+	//chache block size is 64 byte
+	int register blockSize = 64 / sizeof(int);
+	int register MAXSIZE = 1000;
+	int register sum = 0;
+	/// by block ratio = 
+	for(int register jj = 0; jj < MAXSIZE; jj += blockSize){
+		int register jjMaxSize = min(jj + blockSize, MAXSIZE);
+		for(int register kk =jj; kk < MAXSIZE; kk += blockSize){
+			int register kkMaxSize = min(kk + blockSize, MAXSIZE);
+			for(int register i = 0; i < MAXSIZE; i ++){
+				for(int register j = jj; j < jjMaxSize; j ++){
+					sum = 0;
+					for (int register k = kkMaxSize; k > kk ; k --){
+						if(k==j){break;}
+						sum += a[i][k] * b[k][j];
+					}
+					//write, do it once
+					d[i][j] += sum;
+				}
+			}
+		}
+	}
+
+	///ikj ratio = 3.89
+	// for(int register i = 0; i < MAXSIZE; i ++){
+	// 	for(int register k = 0; k < MAXSIZE; k ++){
+	// 		int register num = a[i][k];
+	// 		for(int register j = 0; j < k; j ++){
+	// 			d[i][j] += num * b[k][j];
+	// 		}
+	// 	}
+	// }
+
+	// for (i = 0; i < 1000; i ++)
+	// 	for (j = 0; j < 1000; j ++)
+	// 		for (k = 0; k < 1000; k ++)
+	// 			d[i][j] += a[i][k] * b[k][j];
+
 	//可以修改的部分   结束
 	//======================================================
 	finish_new = clock();

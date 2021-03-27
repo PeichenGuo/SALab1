@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 #define TESTBATCH 100000
 #define MAXLENGTH 4096
 

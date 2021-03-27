@@ -1,4 +1,4 @@
-#define _GNU_SOURCE
+// #define _GNU_SOURCE
 #define L1CACHESIZE 64
 #define TESTBATCH 10000
 // #define ARRAYSIZE 5 * L1CACHESIZE * 1024 + 13
