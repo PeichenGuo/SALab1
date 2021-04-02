@@ -117,5 +117,3 @@ for(int register jj = 0; jj < MAXSIZE; jj += blockSize){
 
 
 
-
-
